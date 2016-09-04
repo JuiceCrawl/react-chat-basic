@@ -2,16 +2,16 @@
     {
         "id": 1388534400000,
         "author": "Anna",
-        "text": "Hey there!"
+        "message": "Hey there!"
     },
     {
-        "id": 1388534400000,
+        "id": 1388534400001,
         "author": "Jake",
-        "text": "Chat App is running!"
+        "message": "Chat App is running!"
     },
     {
         "id": 1472914748107,
         "author": "Arturo",
-        "text": "duremo"
+        "message": "duremo"
     }
 ]
