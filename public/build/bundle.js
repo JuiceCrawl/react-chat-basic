@@ -82,7 +82,7 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'form',
-	        { style: { margin: 50 }, onSubmit: this.onMessageSubmit },
+	        { style: { margin: 50 }, onSubmit: this.props.onMessageSubmit },
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'form-group' },
@@ -159,6 +159,9 @@
 	
 	    var _this3 = _possibleConstructorReturn(this, (CommentBox.__proto__ || Object.getPrototypeOf(CommentBox)).call(this, props));
 	
+	    _this3.handleMessageUpdate = _this3.handleMessageUpdate.bind(_this3);
+	    _this3.handleMessageSubmit = _this3.handleMessageSubmit.bind(_this3);
+	
 	    _this3.state = {
 	      author: '',
 	      message: '',
@@ -176,6 +179,8 @@
 	        _this4.setState({
 	          comments: messages.data
 	        });
+	      }).catch(function (e) {
+	        return console.log('Error in getting comments from db ', e);
 	      });
 	    }
 	  }, {
@@ -193,19 +198,35 @@
 	          message: value
 	        });
 	      }
-	      console.log(this.state);
 	    }
 	  }, {
 	    key: 'handleMessageSubmit',
 	    value: function handleMessageSubmit(e) {
+	      var _this5 = this;
+	
 	      e.preventDefault();
 	
-	      if (!text || !author) {
+	      var author = this.state.author;
+	      var message = this.state.message;
+	      var comments = this.state.comments;
+	
+	      if (!author || !message) {
 	        return;
 	      }
-	      // TODO: send request to the server
-	      this.setState({ author: '', text: '' });
-	      console.log(this.state);
+	
+	      _axios2.default.post('/api/comments', {
+	        author: author,
+	        message: message
+	      }).then(function () {
+	        var newComments = comments.concat({ author: author, message: message });
+	        _this5.setState({
+	          author: '',
+	          message: '',
+	          comments: newComments
+	        });
+	      }).catch(function (e) {
+	        return console.log('Error in posting comments to db ', e);
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -220,7 +241,7 @@
 	            'div',
 	            { className: 'col-md-6 col-md-offset-3' },
 	            _react2.default.createElement(CommentList, { comments: this.state.comments }),
-	            _react2.default.createElement(CommentForm, { onMessageSubmit: this.handleMessageUpdate.bind(this), onMessageUpdate: this.handleMessageUpdate.bind(this) })
+	            _react2.default.createElement(CommentForm, { onMessageSubmit: this.handleMessageSubmit, onMessageUpdate: this.handleMessageUpdate })
 	          )
 	        )
 	      );

@@ -6,7 +6,7 @@ import axios from 'axios'
 class CommentForm extends Component{
   render (){
     return (
-      <form style={{margin:50}} onSubmit={this.onMessageSubmit}>
+      <form style={{margin:50}} onSubmit={this.props.onMessageSubmit}>
         <div className="form-group">
           <label>Name:</label>
           <input className="form-control" type="text" placeholder="your name" id="author" onChange={this.props.onMessageUpdate}/>
@@ -43,6 +43,10 @@ class CommentBox extends Component{
   
   constructor(props) {
     super(props);
+
+    this.handleMessageUpdate = this.handleMessageUpdate.bind(this)
+    this.handleMessageSubmit = this.handleMessageSubmit.bind(this)
+
     this.state = {
       author: '',
       message: '',
@@ -56,7 +60,8 @@ class CommentBox extends Component{
       this.setState({
         comments: messages.data
       })
-    })  
+    })
+    .catch((e)=> console.log('Error in getting comments from db ', e))  
   }
 
   handleMessageUpdate(e){
@@ -72,19 +77,35 @@ class CommentBox extends Component{
         message: value
       }) 
     }
-    console.log(this.state)
          
   }
 
   handleMessageSubmit(e){
     e.preventDefault();
 
-    if (!text || !author) {
+    var author = this.state.author
+    var message = this.state.message
+    var comments = this.state.comments
+
+    if (!author || !message) {
       return;
     }
-    // TODO: send request to the server
-    this.setState({author: '', text: ''});
-    console.log(this.state)
+
+    axios.post('/api/comments', {
+      author: author,
+      message: message
+    })
+    .then(()=>{
+      var newComments = comments.concat({author: author, message: message})
+      this.setState({
+        author: '', 
+        message: '',
+        comments: newComments
+      })
+    })
+    .catch((e)=> console.log('Error in posting comments to db ', e))  
+    
+    
   }
 
   render (){
@@ -93,7 +114,7 @@ class CommentBox extends Component{
         <div className="row">
           <div className="col-md-6 col-md-offset-3">
             <CommentList comments={this.state.comments}/>
-            <CommentForm onMessageSubmit={this.handleMessageUpdate.bind(this)} onMessageUpdate={this.handleMessageUpdate.bind(this)}/>
+            <CommentForm onMessageSubmit={this.handleMessageSubmit} onMessageUpdate={this.handleMessageUpdate}/>
           </div>
         </div>
       </div>

@@ -22,6 +22,7 @@ app.get('/api/comments', function(req, res){
 });
 
 app.post('/api/comments', function(req, res){
+  console.log(req.body)
   fs.readFile(COMMENTS_FILE, function(err, data){
     if (err){
       console.log(err)
@@ -33,7 +34,7 @@ app.post('/api/comments', function(req, res){
     var newComment = {
       id: Date.now(),
       author: req.body.author,
-      text: req.body.text,
+      message: req.body.message,
     };
 
     comments.push(newComment)
