@@ -103,8 +103,7 @@ class CommentBox extends Component{
         comments: newComments
       })
     })
-    .catch((e)=> console.log('Error in posting comments to db ', e))  
-    
+    .catch((e)=> console.log('Error in posting comments to db ', e))   
     
   }
 
